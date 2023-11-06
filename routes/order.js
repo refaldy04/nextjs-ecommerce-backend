@@ -67,6 +67,7 @@ router.get("/", verifyTokenAndAdmin, async (req, res) => {
 
 // GET income
 router.get("/income", verifyTokenAndAdmin, async (req, res) => {
+  console.log(req.query);
   const productId = req.query.pid;
   const date = new Date();
   const lastMonth = new Date(date.setMonth(date.getMonth() - 1));
@@ -78,10 +79,10 @@ router.get("/income", verifyTokenAndAdmin, async (req, res) => {
         $match: {
           createdAt: {
             $gte: previousMonth,
-            ...(productId && {
-              products: { $elemMatch: { productId } },
-            }),
           },
+          ...(productId && {
+            products: { $elemMatch: { productId } },
+          }),
         },
       },
       {
@@ -98,8 +99,11 @@ router.get("/income", verifyTokenAndAdmin, async (req, res) => {
       },
     ]);
 
+    console.log(income);
+
     res.status(200).json(income);
   } catch (error) {
+    console.log(error);
     res.status(500).json(error);
   }
 });
